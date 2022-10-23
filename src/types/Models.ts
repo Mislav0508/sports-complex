@@ -1,3 +1,5 @@
+import { Types } from 'mongoose'
+
 export interface UserInterface {
   email: string;
   password: string;
@@ -7,6 +9,7 @@ export interface UserInterface {
   verified: Date;
   passwordToken: string;
   passwordTokenExpirationDate: Date;
+  enrolledClasses: [Types.ObjectId],
   comparePassword: (candidatePassword: string) => boolean
 }
 
@@ -16,4 +19,12 @@ export interface TokenInterface {
   userAgent: string;
   isValid: boolean;
   user: object;
+}
+
+export interface SportClassInterface {
+  sport: string,
+  ageGroup: string,
+  enrolledUsers: [Types.ObjectId], 
+  startTime: Date,
+  duration: number
 }

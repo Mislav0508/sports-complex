@@ -6,6 +6,8 @@ require('dotenv').config({ path: __dirname+'/config/.env' });
 import cookieParser from "cookie-parser"
 import cors from "cors"
 import { authRouter } from "./routes/authRoutes"
+import { dashboardRouter } from "./routes/dashboardRoutes"
+import { userRouter } from "./routes/userRoutes"
 
 const app = express()
 
@@ -28,6 +30,8 @@ app.use(cookieParser(process.env.JWT_SECRET))
 
 // routes
 app.use('/api/v1/auth', authRouter)
+app.use('/api/v1/dashboard', dashboardRouter)
+app.use('/api/v1/user', userRouter)
 
 app.use(notFoundMiddleware)
 app.use(errorHandlerMiddleware)

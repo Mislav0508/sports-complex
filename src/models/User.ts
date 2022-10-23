@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose'
+import { Schema, model, Types } from 'mongoose'
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
 import { UserInterface } from "../types/Models"
@@ -36,7 +36,13 @@ const UserSchema = new Schema<UserInterface>({
   passwordTokenExpirationDate: {
     type: Date,
   },
-});
+  enrolledClasses: [
+    {
+      type: Types.ObjectId,
+      ref: "SportClass"
+    }
+  ]
+}, {timestamps: true});
 
 UserSchema.pre('save', async function () {
   if (!this.isModified('password')) return;
