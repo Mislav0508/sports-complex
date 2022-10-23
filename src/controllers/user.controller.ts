@@ -58,16 +58,19 @@ const enrollUser = async (req: Request, res: Response) => {
     
     const sportClass = await SportClass.findById(sportClassId)
 
-    if(user.enrolledClasses.length > 2) {
+    if(user.enrolledClasses.length > 1) {
       res.status(StatusCodes.OK).send({msg: "You are allowed to enroll in maximum 2 classes."})
+      return
     }
 
     if(sportClass.enrolledUsers.includes(user._id)) {
       res.status(StatusCodes.OK).send({msg: "You are already enrolled in this class."})
+      return
     }
     
     if(sportClass.enrolledUsers.length > 9) {
       res.status(StatusCodes.OK).send({msg: "Sorry, this class is full."})
+      return
     }
     
     user.enrolledClasses.push(sportClass._id)
@@ -77,7 +80,7 @@ const enrollUser = async (req: Request, res: Response) => {
     await sportClass.save()
 
 
-    res.status(StatusCodes.OK).json({user, sportClass})  
+    res.status(StatusCodes.OK).json({msg: "You have been successfully enrolled in the class!"})  
   } catch (error) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({msg: error})
   }

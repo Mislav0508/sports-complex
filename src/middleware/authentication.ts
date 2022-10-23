@@ -33,7 +33,7 @@ const authenticateUser = async (req: Request, res: Response, next: NextFunction)
     })
 
     if (!existingToken || !existingToken?.isValid) {
-      throw new CustomError.Unauthenticated('Authentication Invalid');
+      throw new CustomError.Unauthenticated('Authentication Invalid')
     }
 
     // create cookies again
@@ -43,18 +43,20 @@ const authenticateUser = async (req: Request, res: Response, next: NextFunction)
     next()
     
   } catch (error) {
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({msg: error})
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({msg: "Please sign in."})
   }
 };
 
 const authorizePermissions = (...roles: string[]) => {
   return (req: Request, res: Response, next: NextFunction): void => {
-    if (!roles.includes("admin")) {
+    let user: any = req.user
+    
+    if (!roles.includes(user.role)) {
       throw new CustomError.Unauthorized(
         'Unauthorized to access this route'
-      );
+      )
     }
-    next();
+    next()
   };
 };
 
