@@ -17,10 +17,10 @@ const getAllClasses = async (req: Request, res: Response) => {
 
 const getClassById = async (req: Request, res: Response) => {
 
-  const id: string = req.params.id
+  const classId: string = req.params.id
 
   try {
-    const sportClass = await SportClass.findById(id)
+    const sportClass = await SportClass.findById(classId)
 
     res.status(StatusCodes.OK).json({sportClass})  
   } catch (error) {
