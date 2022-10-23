@@ -31,7 +31,7 @@ const register = async (req: Request, res: Response) => {
 
     await sendVerificationEmail(user.verificationToken, user.email)
 
-    res.status(StatusCodes.CREATED).json({ 
+    res.status(StatusCodes.CREATED).send({ 
       msg: "Success! Please check your email to verify account."
     })
 
@@ -60,7 +60,7 @@ const verifyEmail = async (req: Request, res: Response) => {
 
     await user.save()
 
-    res.status(StatusCodes.OK).json({msg: "Email verified"})
+    res.status(StatusCodes.OK).send({msg: "Email verified"})
 
   } catch (error) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({msg: error})
@@ -144,7 +144,7 @@ const logout = async (req: any, res: Response) => {
       expires: new Date(Date.now())
     })
 
-    res.status(StatusCodes.OK).json({ msg: 'user logged out!' })
+    res.status(StatusCodes.OK).send({ msg: 'user logged out!' })
 
   } catch (error) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({msg: error})
@@ -179,7 +179,7 @@ const forgotPassword = async (req: Request, res: Response) => {
     }
 
     // Regardless if email exist, we send a success msg so the attacker doesn't know if the email exists.
-    res.status(StatusCodes.OK).json({ msg: "Please check your email for reset password link" })
+    res.status(StatusCodes.OK).send({ msg: "Please check your email for reset password link" })
 
   } catch (error) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({msg: error})
@@ -213,7 +213,7 @@ const resetPassword = async (req: Request, res: Response) => {
     }
     
     // Regardless if email exists, we send a success msg so the attacker doesn't know if the email exists.
-    res.status(StatusCodes.OK).json({ msg: 'Password has been successfully updated!' })
+    res.status(StatusCodes.OK).send({ msg: 'Password has been successfully updated!' })
 
   } catch (error) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({msg: error})

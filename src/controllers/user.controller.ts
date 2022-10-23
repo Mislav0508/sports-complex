@@ -2,6 +2,7 @@ import { Request, Response } from "express"
 import { StatusCodes } from "http-status-codes"
 import { SportClass } from "../models/SportClass"
 import { User } from "../models/User"
+import { userRouter } from "../routes/userRoutes"
 
 const getAllClasses = async (req: Request, res: Response) => {
 
@@ -48,6 +49,49 @@ const filterClasses = async (req: Request, res: Response) => {
 
 }
 
+const rateClass = async (req: Request, res: Response) => {
+
+  const sportClassId: string = req.params.id
+  const { email, rating } = req.body
+  
+  try {
+
+    const user: any = await User.findOne({email: email}) 
+    const sportClass: any = await SportClass.findById(sportClassId) 
+    
+    // Add new rating and calculate average rating
+    sportClass.ratings.push({rating: rating, ratedBy: user._id})
+    const ratingsSum = sportClass.ratings.reduce((accumulator, object) => {
+      return accumulator + object.rating;
+    }, 0);
+    sportClass.averageRating = ratingsSum / sportClass.ratings.length
+
+    await sportClass.save()  
+    
+    res.status(StatusCodes.OK).send({msg: "Your rating has been stored!"}) 
+
+  } catch (error) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({msg: error})
+  }
+}
+
+const commentClass = async (req: Request, res: Response) => {
+  const sportClassId: string = req.params.id
+  const { email, comment } = req.body
+
+  try {
+    const user: any = await User.findOne({email: email})
+    const sportClass = await SportClass.findById(sportClassId)
+
+    sportClass.comments.push({commentedBy: user._id, comment: comment})
+    await sportClass.save()
+
+    res.status(StatusCodes.OK).send({msg: "Your comment has been stored!"})  
+  } catch (error) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({msg: error})
+  }
+}
+
 const enrollUser = async (req: Request, res: Response) => {
 
   const sportClassId: string = req.params.id
@@ -80,7 +124,7 @@ const enrollUser = async (req: Request, res: Response) => {
     await sportClass.save()
 
 
-    res.status(StatusCodes.OK).json({msg: "You have been successfully enrolled in the class!"})  
+    res.status(StatusCodes.OK).send({msg: "You have been successfully enrolled in the class!"})  
   } catch (error) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({msg: error})
   }
@@ -115,5 +159,7 @@ export {
   getClassById,
   filterClasses,
   enrollUser,
-  unEnrollUser
+  unEnrollUser,
+  rateClass,
+  commentClass
 }

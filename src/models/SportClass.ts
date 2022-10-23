@@ -22,7 +22,20 @@ const ClassSchema = new Schema<SportClassInterface>({
   duration: {
     type: Number,
     required: true
-  }
+  },
+  comments: {
+    type: [{
+      comment: String,
+      commentedBy: {type: Types.ObjectId, ref: 'User'}
+    }]
+  },
+  ratings: {
+    type: [{
+      rating: Number,
+      ratedBy: {type: Types.ObjectId, ref: 'User'}
+    }]
+  },
+  averageRating: Number
 });
 
 

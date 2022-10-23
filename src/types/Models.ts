@@ -26,5 +26,14 @@ export interface SportClassInterface {
   ageGroup: string,
   enrolledUsers: [Types.ObjectId], 
   startTime: Date,
-  duration: number
+  duration: number,
+  comments: [{
+    comment: string,
+    commentedBy: Types.ObjectId
+  }],
+  ratings: [{
+    rating: number,
+    ratedBy: Types.ObjectId
+  }],
+  averageRating: number
 }

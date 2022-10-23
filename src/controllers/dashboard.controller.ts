@@ -4,7 +4,7 @@ import { SportClass } from "../models/SportClass"
 import { User } from "../models/User"
 
 const createClass = async (req: Request, res: Response) => {
-  const { sport, ageGroup, startTime, duration } = req.body  
+  const { sport, ageGroup, startTime, duration, comments } = req.body  
   
   try {
 
@@ -12,10 +12,11 @@ const createClass = async (req: Request, res: Response) => {
       sport, 
       ageGroup, 
       startTime,
-      duration
+      duration,
+      comments
     })
 
-    res.status(StatusCodes.CREATED).json({ 
+    res.status(StatusCodes.CREATED).send({ 
       msg: "Success! Class has been created."
     })    
 
@@ -27,7 +28,7 @@ const createClass = async (req: Request, res: Response) => {
 
 const updateClass = async (req: Request, res: Response) => {
   const classId: string = req.params.id
-  const { sport, ageGroup, startTime, duration, enrolledUsersIds } = req.body  
+  const { sport, ageGroup, startTime, duration, enrolledUsersIds, comments, ratings } = req.body  
   
   try {
 
@@ -36,10 +37,12 @@ const updateClass = async (req: Request, res: Response) => {
       ageGroup, 
       startTime,
       duration,
-      enrolledUsersIds
+      enrolledUsersIds,
+      comments,
+      ratings
     })
 
-    res.status(StatusCodes.OK).json({ 
+    res.status(StatusCodes.OK).send({ 
       msg: "Success! Class has been updated."
     })    
 
@@ -56,7 +59,7 @@ const deleteClass = async (req: Request, res: Response) => {
 
     await SportClass.findByIdAndRemove(classId)
 
-    res.status(StatusCodes.OK).json({ 
+    res.status(StatusCodes.OK).send({ 
       msg: "Success! Class has been deleted."
     })    
 
@@ -77,7 +80,7 @@ const createUser = async (req: Request, res: Response) => {
       isVerified
     })
 
-    res.status(StatusCodes.CREATED).json({ 
+    res.status(StatusCodes.CREATED).send({ 
       msg: "Success! User has been created.",
       user
     })
@@ -129,7 +132,7 @@ const updateUser = async (req: Request, res: Response) => {
       enrolledClasses
     })
 
-    res.status(StatusCodes.OK).json({msg: "Success! User has been updated."})    
+    res.status(StatusCodes.OK).send({msg: "Success! User has been updated."})    
 
   } catch (error) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({msg: error})
@@ -144,7 +147,7 @@ const deleteUser = async (req: Request, res: Response) => {
 
     await User.findByIdAndRemove(userId)
 
-    res.status(StatusCodes.OK).json({msg: "Success! User has been deleted."})    
+    res.status(StatusCodes.OK).send({msg: "Success! User has been deleted."})    
 
   } catch (error) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({msg: error})
