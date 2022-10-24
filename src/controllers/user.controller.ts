@@ -57,18 +57,42 @@ const rateClass = async (req: Request, res: Response) => {
   try {
 
     const user: any = await User.findOne({email: email}) 
-    const sportClass: any = await SportClass.findById(sportClassId) 
+    const sportClass: any = await SportClass.findById(sportClassId)
     
-    // Add new rating and calculate average rating
-    sportClass.ratings.push({rating: rating, ratedBy: user._id})
-    const ratingsSum = sportClass.ratings.reduce((accumulator, object) => {
-      return accumulator + object.rating;
-    }, 0);
-    sportClass.averageRating = ratingsSum / sportClass.ratings.length
+    // Check if the user already gave a rating for this class.
+    function userExists(user) {
+      return sportClass.ratings.some(function(el) {
+        return el.ratedBy.equals(user._id);
+      }); 
+    }
+    const alreadyExists = userExists(user)
+    
+    if (alreadyExists) {
 
-    await sportClass.save()  
-    
-    res.status(StatusCodes.OK).send({msg: "Your rating has been stored!"}) 
+      await SportClass.findOneAndUpdate(
+        { _id: sportClassId, 'ratings.ratedBy': user._id },
+        {
+          $set: {
+            'ratings.$.rating': rating
+          }
+        },
+      ) 
+
+      await SportClass.updateMany({}, [{$set: {averageRating: {$avg: "$ratings.rating"}}}])
+       
+      res.status(StatusCodes.OK).send({msg: "Your rating has been updated!"})
+      return
+
+    } else {  // If user didn't already give a rating
+      
+      sportClass.ratings.push({rating: rating, ratedBy: user._id})
+      
+      await sportClass.save()  
+
+      await SportClass.updateMany({}, [{$set: {averageRating: {$avg: "$ratings.rating"}}}])
+      
+      res.status(StatusCodes.OK).send({msg: "Your rating has been stored!"}) 
+    }    
 
   } catch (error) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({msg: error})
