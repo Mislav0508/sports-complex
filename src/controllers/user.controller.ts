@@ -2,26 +2,40 @@ import { Request, Response } from "express"
 import { StatusCodes } from "http-status-codes"
 import { SportClass } from "../models/SportClass"
 import { User } from "../models/User"
-import { userRouter } from "../routes/userRoutes"
 
 const getAllClasses = async (req: Request, res: Response) => {
+  const { role } = req.body 
 
   try {
-    const sportClasses = await SportClass.find()
+    if (role === "admin") {
+
+      var sportClasses = await SportClass.find()
+      
+    } else {
+
+      var sportClasses = await SportClass.find().select(['-comments', '-ratings', '-averageRating', '-_id', '-enrolledUsers'])      
+    }
 
     res.status(StatusCodes.OK).json({sportClasses, total: sportClasses.length})  
   } catch (error) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({msg: error})
   }
+
 }
 
-
 const getClassById = async (req: Request, res: Response) => {
+  const { role } = req.body
 
   const classId: string = req.params.id
 
   try {
-    const sportClass = await SportClass.findById(classId)
+    if (role === "admin") {
+
+      var sportClass = await SportClass.findById(classId)
+    } else {
+      
+      var sportClass = await SportClass.findById(classId).select(['-comments', '-ratings', '-averageRating', '-_id', '-enrolledUsers'])      
+    }
 
     res.status(StatusCodes.OK).json({sportClass})  
   } catch (error) {
@@ -31,16 +45,29 @@ const getClassById = async (req: Request, res: Response) => {
 }
 
 const filterClasses = async (req: Request, res: Response) => {
+  const { role } = req.body
 
   const { sports, age } = req.query  
 
   try {
-    const sportClass = await SportClass.find({
-      $or: [
-        {sport: { $in: (<string>sports).split(",") }},
-        {ageGroup: { $in: (<string>age).split(",") }}
-      ]
-    })
+    if (role === "admin") {
+
+      var sportClass = await SportClass.find({
+        $or: [
+          {sport: { $in: (<string>sports).split(",") }},
+          {ageGroup: { $in: (<string>age).split(",") }}
+        ]
+      })
+
+    } else {
+
+      var sportClass = await SportClass.find({
+        $or: [
+          {sport: { $in: (<string>sports).split(",") }},
+          {ageGroup: { $in: (<string>age).split(",") }}
+        ]
+      }).select(['-comments', '-ratings', '-averageRating', '-_id', '-enrolledUsers'])      
+    }
 
     res.status(StatusCodes.OK).json({sportClass, total: sportClass.length})  
   } catch (error) {
