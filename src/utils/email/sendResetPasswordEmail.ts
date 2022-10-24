@@ -17,8 +17,8 @@ const sendResetPasswordEmail = async (passwordToken: string, email: string) => {
     .then(() => {
       console.log('Reset Password email sent')
     })
-    .catch((error: any) => {
-      console.log(error)      
+    .catch((error: object) => {
+      console.error(error)      
       throw new CustomError.BadRequest("Something went wrong.")
     })
 }

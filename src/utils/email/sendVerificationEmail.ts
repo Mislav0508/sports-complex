@@ -15,8 +15,8 @@ const sendVerificationEmail = async (verificationToken: string, email: string) =
     .then(() => {
       console.log('Email sent')
     })
-    .catch((error: any) => {
-      console.log(error)      
+    .catch((error: object) => {
+      console.error(error)      
       throw new CustomError.BadRequest("Something went wrong.")
     })
 }
