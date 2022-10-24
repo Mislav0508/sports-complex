@@ -185,7 +185,7 @@ const enrollUser = async (req: Request, res: Response) => {
   try {
     const user: UserInterface = await User.findOne({email: email})    
     
-    const sportClass = await SportClass.findById(sportClassId)
+    const sportClass: SportClassInterface = await SportClass.findById(sportClassId)
 
     if(user.enrolledClasses.length > 1) {
       res.status(StatusCodes.OK).send({msg: "You are allowed to enroll in maximum 2 classes."})
@@ -201,12 +201,10 @@ const enrollUser = async (req: Request, res: Response) => {
       res.status(StatusCodes.OK).send({msg: "Sorry, this class is full."})
       return
     }
-    
-    user.enrolledClasses.push(sportClass._id)
-    await user.save()
 
-    sportClass.enrolledUsers.push(user._id)
-    await sportClass.save()
+    await User.findOneAndUpdate({ email: email }, { $push: {enrolledClasses: sportClassId} })    
+
+    await SportClass.findOneAndUpdate({ _id: sportClassId }, { $push: {enrolledUsers: user._id} })
 
 
     res.status(StatusCodes.OK).send({msg: "You have been successfully enrolled in the class!"})  
