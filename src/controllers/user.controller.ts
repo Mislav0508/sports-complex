@@ -83,7 +83,7 @@ const rateClass = async (req: Request, res: Response) => {
       res.status(StatusCodes.OK).send({msg: "Your rating has been updated!"})
       return
 
-    } else {  // If user didn't already give a rating
+    } else {  // If user is giving a rating for the first time for this class.
       
       sportClass.ratings.push({rating: rating, ratedBy: user._id})
       
@@ -107,10 +107,37 @@ const commentClass = async (req: Request, res: Response) => {
     const user: any = await User.findOne({email: email})
     const sportClass = await SportClass.findById(sportClassId)
 
-    sportClass.comments.push({commentedBy: user._id, comment: comment})
-    await sportClass.save()
+    // Check if the user already gave a comment for this class.
+    function userExists(user) {
+      return sportClass.comments.some(function(el) {
+        return el.commentedBy.equals(user._id);
+      }); 
+    }
+    const alreadyExists = userExists(user)
 
-    res.status(StatusCodes.OK).send({msg: "Your comment has been stored!"})  
+    if (alreadyExists) {
+
+      await SportClass.findOneAndUpdate(
+        { _id: sportClassId, 'comments.commentedBy': user._id },
+        {
+          $set: {
+            'comments.$.comment': comment
+          }
+        },
+      ) 
+       
+      res.status(StatusCodes.OK).send({msg: "Your comment has been updated!"})
+      return
+
+    } else {  // If user is giving a comment for the first time for this class
+      
+      sportClass.comments.push({comment: comment, commentedBy: user._id})
+      
+      await sportClass.save()  
+      
+      res.status(StatusCodes.OK).send({msg: "Your comment has been stored!"}) 
+    } 
+ 
   } catch (error) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({msg: error})
   }
