@@ -2,18 +2,21 @@ import { Request, Response } from "express"
 import { StatusCodes } from "http-status-codes"
 import { SportClass } from "../models/SportClass"
 import { User } from "../models/User"
+import { SportClassInterface } from "../types/Models"
 
 const getAllClasses = async (req: Request, res: Response) => {
   const { role } = req.body 
 
   try {
+    let sportClasses: SportClassInterface[]
+
     if (role === "admin") {
 
-      var sportClasses = await SportClass.find()
-      
+      sportClasses = await SportClass.find()
+
     } else {
 
-      var sportClasses = await SportClass.find().select(['-comments', '-ratings', '-averageRating', '-_id', '-enrolledUsers'])      
+      sportClasses = await SportClass.find().select(['-comments', '-ratings', '-averageRating', '-_id', '-enrolledUsers'])      
     }
 
     res.status(StatusCodes.OK).json({sportClasses, total: sportClasses.length})  
@@ -29,12 +32,14 @@ const getClassById = async (req: Request, res: Response) => {
   const classId: string = req.params.id
 
   try {
+    let sportClass: SportClassInterface
+
     if (role === "admin") {
 
-      var sportClass = await SportClass.findById(classId)
+      sportClass = await SportClass.findById(classId)
     } else {
       
-      var sportClass = await SportClass.findById(classId).select(['-comments', '-ratings', '-averageRating', '-_id', '-enrolledUsers'])      
+      sportClass = await SportClass.findById(classId).select(['-comments', '-ratings', '-averageRating', '-_id', '-enrolledUsers'])      
     }
 
     res.status(StatusCodes.OK).json({sportClass})  
@@ -50,9 +55,11 @@ const filterClasses = async (req: Request, res: Response) => {
   const { sports, age } = req.query  
 
   try {
+    let sportClass: SportClassInterface[]
+
     if (role === "admin") {
 
-      var sportClass = await SportClass.find({
+      sportClass = await SportClass.find({
         $or: [
           {sport: { $in: (<string>sports).split(",") }},
           {ageGroup: { $in: (<string>age).split(",") }}
@@ -61,7 +68,7 @@ const filterClasses = async (req: Request, res: Response) => {
 
     } else {
 
-      var sportClass = await SportClass.find({
+      sportClass = await SportClass.find({
         $or: [
           {sport: { $in: (<string>sports).split(",") }},
           {ageGroup: { $in: (<string>age).split(",") }}
@@ -84,7 +91,7 @@ const rateClass = async (req: Request, res: Response) => {
   try {
 
     const user: any = await User.findOne({email: email}) 
-    const sportClass: any = await SportClass.findById(sportClassId)
+    const sportClass: SportClassInterface = await SportClass.findById(sportClassId)
     
     // Check if the user already gave a rating for this class.
     function userExists(user) {
@@ -114,7 +121,7 @@ const rateClass = async (req: Request, res: Response) => {
       
       sportClass.ratings.push({rating: rating, ratedBy: user._id})
       
-      await sportClass.save()  
+      sportClass.save()  
 
       await SportClass.updateMany({}, [{$set: {averageRating: {$avg: "$ratings.rating"}}}])
       
@@ -132,7 +139,7 @@ const commentClass = async (req: Request, res: Response) => {
 
   try {
     const user: any = await User.findOne({email: email})
-    const sportClass = await SportClass.findById(sportClassId)
+    const sportClass: SportClassInterface = await SportClass.findById(sportClassId)
 
     // Check if the user already gave a comment for this class.
     function userExists(user) {
@@ -160,7 +167,7 @@ const commentClass = async (req: Request, res: Response) => {
       
       sportClass.comments.push({comment: comment, commentedBy: user._id})
       
-      await sportClass.save()  
+      sportClass.save()  
       
       res.status(StatusCodes.OK).send({msg: "Your comment has been stored!"}) 
     } 

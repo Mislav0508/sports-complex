@@ -35,5 +35,6 @@ export interface SportClassInterface {
     rating: number,
     ratedBy: Types.ObjectId
   }],
-  averageRating: number
+  averageRating: number,
+  save: () => void
 }
