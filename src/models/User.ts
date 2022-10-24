@@ -32,9 +32,11 @@ const UserSchema = new Schema<UserInterface>({
   verified: Date,
   passwordToken: {
     type: String,
+    default: ''
   },
   passwordTokenExpirationDate: {
     type: Date,
+    default: null
   },
   enrolledClasses: [
     {

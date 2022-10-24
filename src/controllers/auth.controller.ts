@@ -5,7 +5,9 @@ import { User } from "../models/User"
 import { Token } from "../models/Token"
 import { createTokenUser, attachCookiesToResponse, sendVerificationEmail, sendResetPasswordEmail } from "../utils"
 import crypto from "crypto"
-import { Types } from "mongoose"
+import { TokenUserInterface } from "../types/Utils"
+
+
 
 const register = async (req: Request, res: Response) => {
   const { email, password } = req.body
@@ -91,8 +93,15 @@ const login = async (req: Request, res: Response) => {
     if (!user.isVerified) {
       throw new CustomError.Unauthenticated('User not verified.')
     }
-    const IDUser: Types.ObjectId = user._id
-    const tokenUser: object = createTokenUser(IDUser, email, user.role, user.isVerified)
+
+    let tokenUserProperties: TokenUserInterface = {
+      IDUser: user._id, 
+      email: email, 
+      role: user.role, 
+      isVerified: user.isVerified
+    }
+     
+    const tokenUser = createTokenUser(tokenUserProperties)
 
     // create refresh token
     let refreshToken: string = ""

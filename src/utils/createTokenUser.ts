@@ -1,7 +1,12 @@
-import { Types } from "mongoose"
+import { TokenUserInterface } from "../types/Utils"
 
-const createTokenUser = (IDUser: Types.ObjectId, email: string, role: string, isVerified: boolean) => {
-  return { IDUser, email, role, isVerified };
-};
+const createTokenUser = (tokenUser: TokenUserInterface) => {
+  return { 
+    IDUser: tokenUser.IDUser, 
+    email: tokenUser.email, 
+    role: tokenUser.role, 
+    isVerified: tokenUser.isVerified 
+  }
+}
 
-export default createTokenUser;
+export default createTokenUser
