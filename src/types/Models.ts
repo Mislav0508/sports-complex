@@ -1,6 +1,7 @@
 import { Types } from 'mongoose'
 
 export interface UserInterface {
+  _id: Types.ObjectId
   email: string;
   password: string;
   role: string;
@@ -10,7 +11,8 @@ export interface UserInterface {
   passwordToken: string;
   passwordTokenExpirationDate: Date;
   enrolledClasses: [Types.ObjectId],
-  comparePassword: (candidatePassword: string) => boolean
+  comparePassword: (candidatePassword: string) => boolean,
+  save: () => void
 }
 
 export interface TokenInterface {
@@ -22,6 +24,7 @@ export interface TokenInterface {
 }
 
 export interface SportClassInterface {
+  _id: Types.ObjectId,
   sport: string,
   ageGroup: string,
   enrolledUsers: [Types.ObjectId], 
@@ -36,5 +39,6 @@ export interface SportClassInterface {
     ratedBy: Types.ObjectId
   }],
   averageRating: number,
-  save: () => void
+  save: () => void,
+  update: () => void
 }

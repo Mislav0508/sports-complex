@@ -2,7 +2,7 @@ import { Request, Response } from "express"
 import { StatusCodes } from "http-status-codes"
 import { SportClass } from "../models/SportClass"
 import { User } from "../models/User"
-import { SportClassInterface } from "../types/Models"
+import { SportClassInterface, UserInterface } from "../types/Models"
 
 const getAllClasses = async (req: Request, res: Response) => {
   const { role } = req.body 
@@ -90,7 +90,7 @@ const rateClass = async (req: Request, res: Response) => {
   
   try {
 
-    const user: any = await User.findOne({email: email}) 
+    const user: UserInterface = await User.findOne({email: email}) 
     const sportClass: SportClassInterface = await SportClass.findById(sportClassId)
     
     // Check if the user already gave a rating for this class.
@@ -138,7 +138,7 @@ const commentClass = async (req: Request, res: Response) => {
   const { email, comment } = req.body
 
   try {
-    const user: any = await User.findOne({email: email})
+    const user: UserInterface = await User.findOne({email: email})
     const sportClass: SportClassInterface = await SportClass.findById(sportClassId)
 
     // Check if the user already gave a comment for this class.
@@ -183,7 +183,7 @@ const enrollUser = async (req: Request, res: Response) => {
   const { email } = req.body
 
   try {
-    const user: any = await User.findOne({email: email})    
+    const user: UserInterface = await User.findOne({email: email})    
     
     const sportClass = await SportClass.findById(sportClassId)
 
@@ -222,15 +222,11 @@ const unEnrollUser = async (req: Request, res: Response) => {
   const { email } = req.body
 
   try {
-    const user: any = await User.findOne({email: email})    
-    
-    const sportClass: any = await SportClass.findById(sportClassId)
+    const user: UserInterface = await User.findOne({email: email}) 
 
-    user.enrolledClasses.pull(sportClass._id)
-    await user.save()
+    await User.findOneAndUpdate({ email: email }, { $pull: {enrolledClasses: sportClassId} })
 
-    sportClass.enrolledUsers.pull(user._id)
-    await sportClass.save()
+    await SportClass.findOneAndUpdate({ _id: sportClassId }, { $pull: {enrolledUsers: user._id} })
 
     res.status(StatusCodes.OK).send({msg: "You have been unenrolled from this class."})
   } catch (error) { 
