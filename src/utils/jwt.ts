@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken"
 import { Response } from "express"
+import { TokenUserInterface } from "../types/Utils"
 
 
 const createJWT = ({ payload } : { payload: object}) => {
@@ -9,7 +10,7 @@ const createJWT = ({ payload } : { payload: object}) => {
 
 const isTokenValid = (token: string) => jwt.verify(token, process.env.JWT_SECRET as string)
 
-const attachCookiesToResponse = ({ res, user, refreshToken } : { res:Response, user: object, refreshToken: string}) => {
+const attachCookiesToResponse = ({ res, user, refreshToken } : { res: Response, user: TokenUserInterface, refreshToken: string}) => {
   
   const accessTokenJWT: string = createJWT({ payload: user });
   const refreshTokenJWT: string = createJWT({ payload: { user, refreshToken } })

@@ -1,6 +1,7 @@
 import StatusCodes from "http-status-codes"
 import type { ErrorRequestHandler } from "express";
 
+
 const errorHandlerMiddleware: ErrorRequestHandler = (err, req, res, next) => {
 
   let customError = {

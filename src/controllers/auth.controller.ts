@@ -101,6 +101,7 @@ const login = async (req: Request, res: Response) => {
       isVerified: user.isVerified
     }
      
+    // basic user info object
     const tokenUser = createTokenUser(tokenUserProperties)
 
     // create refresh token
@@ -138,7 +139,7 @@ const login = async (req: Request, res: Response) => {
   
 }
 
-const logout = async (req: any, res: Response) => {
+const logout = async (req: Request, res: Response) => {
 
   try {
     await Token.findOneAndDelete({ user: req.user.IDUser })
@@ -210,12 +211,12 @@ const resetPassword = async (req: Request, res: Response) => {
 
     if (user) {
 
-      const currentDate: any = new Date(Date.now()).toISOString().slice(0, 19).replace('T', ' ')   
+      const currentDate: Date = new Date(Date.now())   
       const hashedToken: string = crypto.createHash('md5').update(passwordToken).digest('hex')
 
       if (user.passwordToken === hashedToken && user.passwordTokenExpirationDate > currentDate) {        
         user.password = password
-        user.passwordToken = null
+        user.passwordToken = ""
         user.passwordTokenExpirationDate = null
         await user.save()
       }

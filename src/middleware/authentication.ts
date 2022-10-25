@@ -4,28 +4,27 @@ import { isTokenValid } from "../utils"
 import { Request, Response, NextFunction } from "express"
 import { attachCookiesToResponse } from "../utils"
 import { Token } from "../models/Token"
-
-declare module 'express-serve-static-core' {
-  interface Request {
-    user?: object
-  }
-}
+import { TokenUserInterface } from "../types/Utils"
+import { JwtPayload } from "jsonwebtoken"
 
 const authenticateUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const { refreshToken, accessToken } = req.signedCookies
   
   try {
+    // first look for the access token
     if (accessToken) {
 
-      const payload: any = isTokenValid(accessToken)
+      const payload = isTokenValid(accessToken)
       
-      req.user = payload as any
+      req.user = payload as TokenUserInterface
       
       return next()
     }
     
+    // If no accessToken then search for refreshToken
+    
     // payload was created in attachCookiesToResponse with createJWT 
-    const payload: any = isTokenValid(refreshToken) 
+    const payload = isTokenValid(refreshToken) as JwtPayload 
 
     const existingToken = await Token.findOne({
       user: payload.user.IDUser,
@@ -49,7 +48,7 @@ const authenticateUser = async (req: Request, res: Response, next: NextFunction)
 
 const authorizePermissions = (...roles: string[]) => {
   return (req: Request, res: Response, next: NextFunction): void => {
-    let user: any = req.user
+    let user = req.user as TokenUserInterface
     
     if (!roles.includes(user.role)) {
       throw new CustomError.Unauthorized(
