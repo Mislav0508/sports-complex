@@ -6,7 +6,7 @@ import { SportClassInterface, UserInterface } from "../types/Models"
 
 const getAllClasses = async (req: Request, res: Response) => {
   const { role } = req.body 
-
+  
   try {
     let sportClasses: SportClassInterface[]
 

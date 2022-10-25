@@ -2,7 +2,7 @@
   "name": "sports-complex",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "ts-node-dev --files --respawn --transpile-only src/app.ts"

@@ -27,7 +27,7 @@ const corsOptions = {
   optionSuccessStatus:200
 }
 app.use(cors(corsOptions))
-app.set('trust proxy', 1);
+app.set('trust proxy', 1)
 
 app.use(express.json())
 app.use(cookieParser(process.env.JWT_SECRET))
@@ -51,17 +51,17 @@ app.use(helmet())
 app.use(xss())
 app.use(mongoSanitize())
 
-const port = process.env.PORT || 8080
+const port = process.env.PORT || 3000
 
 const start = async () => {
   try {
-    await connectDB(process.env.MONGO_URL);
+    await connectDB("mongodb://mongo:27017/sports-complex-node")
     app.listen(port, () =>
       console.log(`Server is listening on port ${port}...`)
-    );
+    )
   } catch (error) {
     console.log(error);
   }
-};
+}
 
-start();
+start()
