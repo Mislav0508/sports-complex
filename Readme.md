@@ -16,7 +16,7 @@ env file should be placed in the same folder as docker-compose.yml
 ### Email notifications
 ```SENDGRID_API_KEY```=your_sendgrid_key <br />
 ```RECIPIENT_EMAIL```=example@gmail.com <br />
-SENDER_EMAIL=example@gmail.com
+```SENDER_EMAIL```=example@gmail.com
 
 ### JWT
 ```JWT_SECRET```=mysupersecret <br />
