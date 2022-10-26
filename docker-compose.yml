@@ -7,7 +7,7 @@ services:
     ports:
       - "5000:3000"
     env_file:
-    - .env
+      - .env
     external_links:
       - mongo
   mongo:
