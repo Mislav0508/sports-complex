@@ -5,8 +5,8 @@ const sgMail = require('@sendgrid/mail')
 const sendResetPasswordEmail = async (passwordToken: string, email: string) => {
   sgMail.setApiKey(process.env.SENDGRID_API_KEY)
   const msg = {
-    to: 'mcdesign0508@gmail.com', // Change to your recipient
-    from: 'mcdesign0508@gmail.com', // Change to your verified sender
+    to: process.env.RECIPIENT_EMAIL, // Change to your recipient
+    from: process.env.SENDER_EMAIL, // Change to your verified sender
     subject: 'Reset Password',
     text: 'Click the link below to reset your password.',
     html: `<p>Please reset password by clicking on the following link : 

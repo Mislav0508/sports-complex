@@ -6,6 +6,8 @@ services:
     build: .
     ports:
       - "5000:3000"
+    env_file:
+    - .env
     external_links:
       - mongo
   mongo:
@@ -13,3 +15,5 @@ services:
     image: mongo
     ports:
       - "27017:27017"
+    env_file:
+      - .env
