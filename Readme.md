@@ -6,7 +6,8 @@ https://documenter.getpostman.com/view/13858608/2s84LNTspB#e5819209-12d2-426c-9a
 
 # env file should be placed in the same folder as docker-compose.yml
 
-# env file example 
+
+# ENV FILE EXAMPLE:
 
 # Application info
 PORT=3000
