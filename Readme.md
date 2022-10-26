@@ -8,16 +8,16 @@ env file should be placed in the same folder as docker-compose.yml
 ## ENV FILE EXAMPLE:
 
 ### Application info
-PORT=3000
+```PORT```=3000
 
 ### Database credentials
-MONGO_URL=mongodb://mongo:27017/sports-complex-node
+```MONGO_URL```=mongodb://mongo:27017/sports-complex-node
 
 ### Email notifications
-SENDGRID_API_KEY=your_sendgrid_key <br />
-RECIPIENT_EMAIL=example@gmail.com <br />
+```SENDGRID_API_KEY```=your_sendgrid_key <br />
+```RECIPIENT_EMAIL```=example@gmail.com <br />
 SENDER_EMAIL=example@gmail.com
 
 ### JWT
-JWT_SECRET=mysupersecret <br />
-JWT_LIFETIME=1h
+```JWT_SECRET```=mysupersecret <br />
+```JWT_LIFETIME```=1h
